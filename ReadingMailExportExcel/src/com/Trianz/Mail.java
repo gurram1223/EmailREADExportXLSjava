@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Scanner;
 
+import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -27,10 +28,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
  
 public class Mail {
-	private static final String FILE_NAME = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\MailList.xlsx";
+	private static final String FILE_NAME = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\MailListex.xlsx";
     public static void main(String[] args) throws IOException, MessagingException{
     	System.out.println("Welcome to mail reading application");
-    	//System.out.println(System.getProperty("user.name"));
+    	System.out.println(System.getProperty("user.name"));
     	
     	Mail mail = new Mail();
         Message[] msg=mail.read();
@@ -40,8 +41,9 @@ public class Mail {
     	 
     	
     public void exportExcel(Message[] msg) throws MessagingException {
+    	System.out.println("entered into exportExcel()");
     	XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Datatypes in Java");
+        XSSFSheet sheet = workbook.createSheet("Mails Reading");
       
         Object[][] datatypes=new Object[msg.length+1][6];
      
@@ -53,7 +55,7 @@ public class Mail {
         System.out.println(msg.length+"hi ");
         for(int i=0;i<msg.length;i++) {
         	datatypes[i+1][0] = msg[i].getFrom()[0].toString();
-        	datatypes[i+1][1] =  msg[i].getAllRecipients()[0].toString();
+        //	datatypes[i+1][1] =  msg[i].getAllRecipients()[0].toString();
           	datatypes[i+1][2] =msg[i].getSubject();
           	datatypes[i+1][3] = msg[i].getReceivedDate().toString();
         	// datatypes[i][4]=msg[i].getSentDate().toString();
@@ -100,6 +102,8 @@ public class Mail {
  
     
     public Message[] read()  {
+    	System.out.println("inside Read()");
+    	 Message[] messages = null;
  
         //Properties props = new Properties();
  
@@ -109,30 +113,33 @@ public class Mail {
         			props.put("mail.smtp.starttls.enable", "true");
         			props.put("mail.smtp.auth", "true");
         			//props.put("mail.imap.usesocketchannels", "true");
-        			props.put("mail.smtp.host", "smtp.gmail.com");//m.outlook.com//smtp.gmail.com
-        			props.put("mail.smtp.port", "465");//993//465
-        			props.put("mail.smtp.socketFactory.port", "465");//993//465
+        			props.put("mail.smtp.host", "m.outlook.com");//m.outlook.com//smtp.gmail.com
+        			props.put("mail.smtp.port", "993");//993//465
+        			props.put("mail.smtp.socketFactory.port", "993");//993//465
         			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        			props.setProperty("mail.imap.usesocketchannels", "true");
+        			props.setProperty("mail.imaps.usesocketchannels", "true");
         	
         	
             //props.load(new FileInputStream(new File("C:\\smtp.properties")));
             Session session = Session.getDefaultInstance(props, null);
  
             Store store = session.getStore("imaps");
-            store.connect("smtp.gmail.com", "mavurimahesh1995@gmail.com", "Passw0rd@123");//smtp.gmail.com//m.outlook.com
+            store.connect("m.outlook.com", "pavan.gurram@trianz.com", "Trianz?$69910");//smtp.gmail.com//m.outlook.com
             
-            Folder inbox = store.getFolder("inbox");
+            Folder inbox = store.getFolder("INBOX");
+           
+
+           
             
             inbox.open(Folder.READ_ONLY);
             int messageCount = inbox.getMessageCount();
  
             System.out.println("Total Messages:- " + messageCount);
           
-            Message[] messages = inbox.getMessages();
+             messages = inbox.getMessages();
             System.out.println("-----message length---"+ messages.length);
  
-            for (int i =0; i<messages.length; i++) {
+            for (int i =100; i>0; i--) {
                 System.out.println("Mail Subject:- " + messages[i].getSubject());
                 System.out.println("sent date:- " + messages[i].getSentDate());
                 System.out.println("receipent:- " + messages[i].getAllRecipients()[0]);//Use StringTokenizer to send email addr.
@@ -147,9 +154,11 @@ public class Mail {
             return messages;
  
         } catch (Exception e) {
-            e.printStackTrace();
+        	System.out.println("entered into read() catch");
+        	return messages;
+          //  e.printStackTrace();
         }
-        return null;
+       // return null;
     }
 
 	
